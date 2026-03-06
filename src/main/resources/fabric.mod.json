@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "try-again",
+	"version": "${version}",
+	"name": "Try Again",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/try-again/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.minhduong.TryAgain"
+		]
+	},
+	"mixins": [
+		"try-again.mixins.json",
+		{
+			"config": "try-again.mixins.json",
+			"environment": "server"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
