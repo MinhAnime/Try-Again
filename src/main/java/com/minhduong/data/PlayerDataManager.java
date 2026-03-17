@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class PlayerDataManager {
     private static Path DATA_FILE = FabricLoader.getInstance().getConfigDir().resolve("tryagain").resolve("players.json");
@@ -58,6 +57,7 @@ public class PlayerDataManager {
     public static void clearSession(String username) {
         authenticated.remove(username.toLowerCase());
     }
+
     public static synchronized void save() {
         try {
             JsonObject root = new JsonObject();
@@ -66,7 +66,7 @@ public class PlayerDataManager {
                 GSON.toJson(root, w);
             }
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[AuthMod] Failed to save accounts.", e);
+            TryAgain.LOGGER.error("[TryAgain] Failed to save accounts.", e);
         }
     }
     private static void load() {
@@ -77,7 +77,7 @@ public class PlayerDataManager {
             for (Map.Entry<String, JsonElement> e : root.entrySet())
                 accounts.put(e.getKey(), e.getValue().getAsString());
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[AuthMod] Failed to load accounts.", e);
+            TryAgain.LOGGER.error("[TryAgain] Failed to load accounts.", e);
         }
     }
 }

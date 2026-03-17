@@ -7,7 +7,7 @@ public class Messages {
     public static Text success(String msg) { return Text.literal("§a[Auth] §f" + msg); }
     public static Text info(String msg)    { return Text.literal("§e[Auth] §f" + msg); }
 
-    public static final Text MUST_LOGIN        = info("Bạn phải đăng nhập! Dùng: /login <mật_khẩu>");
+    public static final Text MUST_LOGIN        = info("Bạn phải đăng nhập! Dùng: /login <mật khẩu>");
     public static final Text MUST_REGISTER     = info("Chưa có tài khoản! Dùng: /register <mật_khẩu> <nhắc_lại> <token>");
     public static final Text ALREADY_AUTH      = error("Bạn đã đăng nhập rồi.");
     public static final Text LOGIN_SUCCESS     = success("Đăng nhập thành công!");
