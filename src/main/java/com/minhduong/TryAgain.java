@@ -37,6 +37,7 @@ public class TryAgain implements ModInitializer {
 			BuyCommand.register(dispatcher);
 			BalanceCommand.register(dispatcher);
 			HelpCommand.register(dispatcher);
+			HudCommand.register(dispatcher);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register(AuthEventHandler::onPlayerJoin);

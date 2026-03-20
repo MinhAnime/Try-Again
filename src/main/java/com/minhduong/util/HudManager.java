@@ -7,9 +7,8 @@ import net.minecraft.scoreboard.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HudManager {
 
@@ -17,9 +16,21 @@ public class HudManager {
     private static final String DISPLAY_TITLE  = "§6§lTryAgain";
     private static final int    MARKET_ROWS    = 6;
 
+
+    public static boolean toggle(ServerPlayerEntity player) {
+        String uname = player.getName().getString();
+        boolean newState = !EconomyManager.isHudEnabled(uname);
+        EconomyManager.setHudEnabled(uname, newState);
+        return newState;
+    }
+    public static boolean isEnabled(ServerPlayerEntity player) {
+        return EconomyManager.isHudEnabled(player.getName().getString());
+    }
+
     public static void update(ServerPlayerEntity player) {
         if (player.isRemoved()) return;
-        Scoreboard sb = player.getScoreboardTeam().getScoreboard();
+        if (!isEnabled(player)) return;
+        Scoreboard sb = player.getEntityWorld().getScoreboard();
 
         ScoreboardObjective obj = sb.getNullableObjective(OBJECTIVE_NAME);
         if (obj == null) {
@@ -37,7 +48,7 @@ public class HudManager {
     }
 
     public static void remove(ServerPlayerEntity player) {
-        Scoreboard sb = player.getScoreboardTeam().getScoreboard();
+        Scoreboard sb = player.getEntityWorld().getScoreboard();
         ScoreboardObjective obj = sb.getNullableObjective(OBJECTIVE_NAME);
         if (obj != null) sb.removeObjective(obj);
     }
