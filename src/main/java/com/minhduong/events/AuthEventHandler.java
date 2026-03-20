@@ -1,6 +1,7 @@
 package com.minhduong.events;
 
 import com.minhduong.data.PlayerDataManager;
+import com.minhduong.data.TpaManager;
 import com.minhduong.util.*;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -39,6 +40,7 @@ public class AuthEventHandler {
         } else {
             player.sendMessage(Messages.info("Chào mừng! Dùng: /register <mật khẩu> <xác nhận mật khẩu> <token>"));
         }
+        player.sendMessage(Messages.info("Dùng /tryagain để xem hướng dẫn đầy đủ."));
     }
 
     // ─── Player leave ─────────────────────────────────────────────────────────
@@ -47,6 +49,8 @@ public class AuthEventHandler {
         ServerPlayerEntity player = handler.getPlayer();
         PlayerDataManager.clearSession(player.getName().getString());
         SessionManager.endSession(player);
+        TpaManager.clearAll(player.getUuid());
+        HudManager.remove(player);
         lastReminder.remove(player.getUuid());
     }
 
@@ -80,7 +84,14 @@ public class AuthEventHandler {
                 toKick.forEach(p -> p.networkHandler.disconnect(
                         Text.literal("§cVào treo máy à. Cút ngay ra.")));
             }
-
+            if (hudTick >= 40) {
+                hudTick = 0;
+                for (ServerPlayerEntity p : s.getPlayerManager().getPlayerList()) {
+                    if (PlayerDataManager.isAuthenticated(p.getName().getString())) {
+                        HudManager.update(p);
+                    }
+                }
+            }
         });
     }
 
