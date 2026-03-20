@@ -44,7 +44,6 @@ dependencies {
 	compileOnly('org.geysermc.geyser:api:2.9.0-SNAPSHOT')
 	compileOnly('org.geysermc.floodgate:api:2.2.4-SNAPSHOT')
 
-
 }
 
 processResources {

@@ -46,7 +46,7 @@ public class HomeManager {
                 ));
             }
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[AuthMod] Failed to load homes.", e);
+            TryAgain.LOGGER.error("[TryAgain] Failed to load homes.", e);
         }
     }
     public static synchronized void save() {

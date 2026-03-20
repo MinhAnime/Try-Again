@@ -1,5 +1,6 @@
 package com.minhduong;
 
+import com.minhduong.command.HomeCommand;
 import com.minhduong.command.LoginCommand;
 import com.minhduong.command.RegisterCommand;
 import com.minhduong.data.HomeManager;
@@ -23,10 +24,12 @@ public class TryAgain implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("[Try Again] Loading...");
 		PlayerDataManager.init();
+		HomeManager.init();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			LoginCommand.register(dispatcher);
 			RegisterCommand.register(dispatcher);
+			HomeCommand.register(dispatcher);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register(AuthEventHandler::onPlayerJoin);
