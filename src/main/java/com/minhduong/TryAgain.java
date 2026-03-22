@@ -22,7 +22,7 @@ public class TryAgain implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("[Try Again] Loading...");
+		LOGGER.info("Loading...");
 		PlayerDataManager.init();
 		HomeManager.init();
 		EconomyManager.init();
@@ -43,7 +43,7 @@ public class TryAgain implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register(AuthEventHandler::onPlayerJoin);
 		ServerPlayConnectionEvents.DISCONNECT.register(AuthEventHandler::onPlayerLeave);
 		ServerLifecycleEvents.SERVER_STARTED.register(s -> server = s);
-		LOGGER.info("[Try Again] Ready.");
+		LOGGER.info("Ready.");
 	}
 	public static MinecraftServer getServer() {
 		return server;

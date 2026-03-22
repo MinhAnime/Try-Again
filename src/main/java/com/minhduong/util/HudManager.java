@@ -54,27 +54,58 @@ public class HudManager {
     }
 
     private static List<String> buildLines(ServerPlayerEntity player) {
+
         String uname = player.getName().getString();
         List<String> lines = new ArrayList<>();
 
-        lines.add("§8§m──────────────");
-        lines.add("§fSố dư: §a§l" + EconomyManager.getBalance(uname) + "§r§f xu");
-        lines.add(String.format("§fTP tiếp: §e%dxu §7(lần %d hôm nay)",
-                EconomyManager.getNextTpCost(uname), EconomyManager.getTodayTpCount(uname) + 1));
-        lines.add("§r ");
-        lines.add("§b§lThị trường §7(bán/mua/kho)");
+        // ===== HEADER =====
+        lines.add("§8§m━━━━━━━━━━━━━━━━");
+        lines.add("§6§l  ✦ SERVER MARKET ✦");
+        lines.add("§8§m━━━━━━━━━━━━━━━━");
 
+        // ===== PLAYER INFO =====
+        lines.add("§7👤 §fNgười chơi: §e" + uname);
+        lines.add("§7💰 §fSố dư: §a§l"
+                + EconomyManager.getBalance(uname) + "§r§a xu");
+
+        lines.add(String.format(
+                "§7📍 §fTP tiếp: §6%dxu §8• §7Lần §e%d",
+                EconomyManager.getNextTpCost(uname),
+                EconomyManager.getTodayTpCount(uname) + 1
+        ));
+
+        lines.add(" ");
+
+        // ===== MARKET HEADER =====
+        lines.add("§b§l Thị Trường");
+        lines.add("§8────────────────");
+        lines.add("§7Vật phẩm   §aBán §eMua §fKho");
+
+        // ===== ITEMS =====
         for (Item item : getSortedItems()) {
-            int    s    = MarketManager.getStock(item);
-            String sc   = (s == 0 || s < 32) ? "§c" : s < MarketManager.STOCK_NORMAL ? "§e" : "§a";
-            lines.add(String.format("§f%-11s §a%3d §e%3d %s%4d§r %s",
-                    shortName(item), MarketManager.getSellPrice(item), MarketManager.getBuyPrice(item),
-                    sc, s, MarketManager.getPriceTrend(item, false)));
+
+            int stock = MarketManager.getStock(item);
+
+            String stockColor =
+                    (stock <= 0) ? "§4" :
+                            (stock < 32) ? "§c" :
+                                    (stock < MarketManager.STOCK_NORMAL) ? "§e" : "§a";
+
+            lines.add(String.format(
+                    "§f%-10s §a%3d §e%3d %s%4d§r %s",
+                    shortName(item),
+                    MarketManager.getSellPrice(item),
+                    MarketManager.getBuyPrice(item),
+                    stockColor,
+                    stock,
+                    MarketManager.getPriceTrend(item, false)
+            ));
         }
 
-        lines.add("§8§m──────────────");
-        return lines;
+        // ===== FOOTER =====
+        lines.add("§8§m━━━━━━━━━━━━━━━━");
 
+        return lines;
     }
 
     private static List<Item> getSortedItems() {

@@ -31,7 +31,7 @@ public class EconomyManager {
     private static final Map<String, String>  tpDate  = new ConcurrentHashMap<>();
     private static final Set<String> hudDisabled = ConcurrentHashMap.newKeySet();
 
-    public static void init() { load(); TryAgain.LOGGER.info("[TryAgain] Economy loaded."); }
+    public static void init() { load(); TryAgain.LOGGER.info("Economy loaded."); }
 
     public static long getBalance(String u)   { return balance.getOrDefault(u.toLowerCase(), 0L); }
 
@@ -84,7 +84,7 @@ public class EconomyManager {
             if (root.has("tpCount"))  root.getAsJsonObject("tpCount").entrySet().forEach(e -> tpCount.put(e.getKey(), e.getValue().getAsInt()));
             if (root.has("tpDate"))   root.getAsJsonObject("tpDate").entrySet().forEach(e -> tpDate.put(e.getKey(), e.getValue().getAsString()));
             if (root.has("hudDisabled")) root.getAsJsonArray("hudDisabled").forEach(e -> hudDisabled.add(e.getAsString()));
-        } catch (IOException e) { TryAgain.LOGGER.error("[TryAgain] Failed to load economy.", e); }
+        } catch (IOException e) { TryAgain.LOGGER.error("Failed to load economy.", e); }
     }
 
     public static synchronized void save() {
@@ -96,6 +96,7 @@ public class EconomyManager {
             JsonObject td = new JsonObject(); tpDate.forEach(td::addProperty); root.add("tpDate", td);
             JsonArray hd = new JsonArray();  hudDisabled.forEach(hd::add);     root.add("hudDisabled", hd);
             try (Writer w = Files.newBufferedWriter(FILE, StandardCharsets.UTF_8)) { GSON.toJson(root, w); }
-        } catch (IOException e) { TryAgain.LOGGER.error("[TryAgain] Failed to save economy.", e); }
+        } catch (IOException e) { TryAgain.LOGGER.error("" +
+                "Failed to save economy.", e); }
     }
 }

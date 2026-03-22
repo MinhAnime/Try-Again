@@ -28,9 +28,9 @@ public class PlayerDataManager {
         try {
             Files.createDirectories(DATA_FILE.getParent());
             load();
-            TryAgain.LOGGER.info("[Try Again] Loaded {} accounts", accounts.size());
+            TryAgain.LOGGER.info("[Loaded {} accounts", accounts.size());
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[Try Again] Failed to init data.", e);
+            TryAgain.LOGGER.error("Failed to init data.", e);
         }
     }
     public static boolean accountExists(String name) {
@@ -66,7 +66,7 @@ public class PlayerDataManager {
                 GSON.toJson(root, w);
             }
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[TryAgain] Failed to save accounts.", e);
+            TryAgain.LOGGER.error("Failed to save accounts.", e);
         }
     }
     private static void load() {
@@ -77,7 +77,7 @@ public class PlayerDataManager {
             for (Map.Entry<String, JsonElement> e : root.entrySet())
                 accounts.put(e.getKey(), e.getValue().getAsString());
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[TryAgain] Failed to load accounts.", e);
+            TryAgain.LOGGER.error("Failed to load accounts.", e);
         }
     }
 }

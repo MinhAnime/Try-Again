@@ -49,7 +49,7 @@ public class MarketManager {
 
     public static void init() {
         load();
-        TryAgain.LOGGER.info("[TryAgain] Loading Market Manager]");
+        TryAgain.LOGGER.info("Loading Market Manager");
     }
 
     public static boolean isTradeable(Item i) {
@@ -98,7 +98,7 @@ public class MarketManager {
             JsonObject root = GSON.fromJson(r, JsonObject.class);
             if (root != null && root.has("stock"))
                 root.getAsJsonObject("stock").entrySet().forEach(e -> stock.put(e.getKey(), e.getValue().getAsInt()));
-        } catch (IOException e) { TryAgain.LOGGER.error("[TryAgain] Failed to load market.", e); }
+        } catch (IOException e) { TryAgain.LOGGER.error("Failed to load market.", e); }
     }
     public static synchronized void save() {
         try {
@@ -106,7 +106,7 @@ public class MarketManager {
             JsonObject root = new JsonObject(); JsonObject s = new JsonObject();
             stock.forEach(s::addProperty); root.add("stock", s);
             try (Writer w = Files.newBufferedWriter(FILE, StandardCharsets.UTF_8)) { GSON.toJson(root, w); }
-        } catch (IOException e) { TryAgain.LOGGER.error("[TryAgain] Failed to save market.", e); }
+        } catch (IOException e) { TryAgain.LOGGER.error("Failed to save market.", e); }
     }
 
     public static String itemKey(Item i) {

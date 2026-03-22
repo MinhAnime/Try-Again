@@ -16,7 +16,7 @@ public class HomeManager {
     private static final Map<String, HomeData> homes = new ConcurrentHashMap<>();
     public static void init() {
         load();
-        TryAgain.LOGGER.info("[TryAgain] Loaded {} home(s).", homes.size());
+        TryAgain.LOGGER.info("Loaded {} home(s).", homes.size());
     }
     public static boolean hasHome(String username) {
         return homes.containsKey(username.toLowerCase());
@@ -46,7 +46,7 @@ public class HomeManager {
                 ));
             }
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[TryAgain] Failed to load homes.", e);
+            TryAgain.LOGGER.error("Failed to load homes.", e);
         }
     }
     public static synchronized void save() {
@@ -65,7 +65,7 @@ public class HomeManager {
                 GSON.toJson(root, w);
             }
         } catch (IOException e) {
-            TryAgain.LOGGER.error("[AuthMod] Failed to save homes.", e);
+            TryAgain.LOGGER.error("Failed to save homes.", e);
         }
     }
 }
