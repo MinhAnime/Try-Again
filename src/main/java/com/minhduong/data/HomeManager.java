@@ -39,7 +39,6 @@ public class HomeManager {
         return Optional.ofNullable(getPlayerHomes(username).get(homeName.toLowerCase()));
     }
 
-    /** Trả về tất cả home của người chơi theo thứ tự tên. */
     public static List<HomeData> getHomes(String username) {
         return new ArrayList<>(getPlayerHomes(username).values())
                 .stream()
@@ -47,14 +46,12 @@ public class HomeManager {
                 .toList();
     }
 
-    /** Tên các home để dùng cho tab-completion. */
     public static List<String> getHomeNames(String username) {
         return getHomes(username).stream().map(HomeData::getName).toList();
     }
 
     // ─── Mutate ───────────────────────────────────────────────────────────────
 
-    /** @return false nếu đã đủ MAX_HOMES và tên chưa tồn tại */
     public static boolean setHome(String username, HomeData home) {
         Map<String, HomeData> m = getPlayerHomes(username);
         boolean isNew = !m.containsKey(home.getName().toLowerCase());

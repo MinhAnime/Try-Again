@@ -18,8 +18,8 @@ public class HomeTextBuilder {
 
     // world icon
     private static String worldIcon(String world) {
-        if (world.contains("the_nether")) return "🔥";
-        if (world.contains("the_end")) return "☁";
+        if (world.contains("minecraft:the_nether")) return "🔥";
+        if (world.contains("minecraft:the_end")) return "☁";
         return "🌍";
     }
 

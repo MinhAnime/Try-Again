@@ -19,9 +19,9 @@ public class HomeData {
 
     public String friendlyWorld() {
         return switch (worldId) {
-            case "minecraft:overworld"  -> "OW";
-            case "minecraft:the_nether" -> "NE";
-            case "minecraft:the_end"    -> "EN";
+            case "minecraft:overworld"  -> "Overworld";
+            case "minecraft:the_nether" -> "The Nether";
+            case "minecraft:the_end"    -> "The End";
             default -> worldId;
         };
     }

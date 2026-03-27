@@ -83,7 +83,13 @@ public class HomeCommand {
     private static int doSetHome(ServerPlayerEntity player, String name) {
 
         String username = player.getName().getString();
-        String world = player.getEntityWorld().getServer().getWorlds().toString();
+
+        if (HomeManager.hasHome(username, name)) {
+            player.sendMessage(Messages.error("Home '" + name + "' đã tồn tại!"));
+            return 0;
+        }
+
+        String world = player.getEntityWorld().getRegistryKey().getValue().toString();
 
         HomeData home = new HomeData(
                 name,
@@ -175,8 +181,8 @@ public class HomeCommand {
 
     private static int listHomes(ServerPlayerEntity player) {
 
-        List<HomeData> list =
-                HomeManager.getHomes(player.getName().getString());
+        List<HomeData> list = new java.util.ArrayList<>(
+                HomeManager.getHomes(player.getName().getString()));
 
         if (list.isEmpty()) {
             player.sendMessage(Messages.info(
