@@ -33,17 +33,7 @@ public class TryAgain implements ModInitializer {
 			HomeCommand.register(dispatcher);
 			TpaCommand.register(dispatcher);
 			HelpCommand.register(dispatcher);
-			
-			dispatcher.register(net.minecraft.server.command.CommandManager.literal("tryagain")
-				.then(net.minecraft.server.command.CommandManager.literal("reload")
-					.requires(source -> true)
-					.executes(ctx -> {
-						LanguageManager.load();
-						ctx.getSource().sendMessage(com.minhduong.util.Messages.success("reloaded"));
-						return 1;
-					})
-				)
-			);
+			LanguageCommand.register(dispatcher);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register(AuthEventHandler::onPlayerJoin);
