@@ -1,0 +1,17 @@
+{
+  "prefix_error": "<#FF5555>[TryAgain] &f",
+  "prefix_success": "<#55FF55>[TryAgain] &f",
+  "prefix_info": "<#FFFF55>[TryAgain] &f",
+  "must_login": "You must login! Use: /login <password>",
+  "must_register": "No account found! Use: /register <password> <confirm> <token>",
+  "already_auth": "You are already authenticated.",
+  "login_success": "Logged in successfully!",
+  "wrong_password": "Wrong password.",
+  "register_success": "Registered successfully! You are now logged in.",
+  "pass_no_match": "Passwords do not match.",
+  "name_taken": "This username is already taken.",
+  "invalid_token": "Invalid token.",
+  "pass_too_short": "Password must be at least 4 characters long.",
+  "auth_timeout": "Time out. Please login/register next time.",
+  "reloaded": "Languages have been reloaded."
+}

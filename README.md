@@ -94,6 +94,22 @@ Ví dụ `config.json`:
 
 ---
 
+## Đa Ngôn Ngữ & Tuỳ Chỉnh Tin Nhắn (I18n & Formatting)
+
+Mod hỗ trợ hệ thống đa ngôn ngữ hoàn chỉnh và cho phép trang trí tin nhắn (hỗ trợ mã màu Hex `<#RRGGBB>` và màu Legacy `&a`, `&l`...).
+
+**Cách đóng góp ngôn ngữ mới trên GitHub:**
+1. Fork dự án và truy cập vào thư mục `src/main/resources/assets/tryagain/lang/`.
+2. Tạo hoặc sao chép file JSON có sẵn (ví dụ: `vi_vn.json`, `en_us.json`) sang một ngôn ngữ mới (ví dụ: `zh_cn.json`).
+3. Commit và tạo Pull Request để đóng góp bản dịch của bạn!
+
+**Ghi đè cấu hình tại server (Không cần đụng vào code):**
+- Khi server chạy, các file ngôn ngữ mặc định sẽ được xuất ra `config/tryagain/lang/`.
+- Admin có thể mở các file `.json` tại đây để tuỳ chỉnh lại màu sắc, chữ viết theo ý muốn. File config sẽ ưu tiên được đọc trước.
+- Dùng lệnh `/tryagain reload` trong game hoặc console để cập nhật text ngay lập tức mà không cần khởi động lại Server.
+
+---
+
 ## Lệnh
 
 ### Xác thực

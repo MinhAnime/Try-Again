@@ -1,0 +1,17 @@
+{
+  "prefix_error": "<#FF5555>[TryAgain] &f",
+  "prefix_success": "<#55FF55>[TryAgain] &f",
+  "prefix_info": "<#FFFF55>[TryAgain] &f",
+  "must_login": "Bạn phải đăng nhập! Dùng: /login <mật khẩu>",
+  "must_register": "Chưa có tài khoản! Dùng: /register <mật_khẩu> <nhắc_lại> <token>",
+  "already_auth": "Bạn đã đăng nhập rồi.",
+  "login_success": "Đăng nhập thành công!",
+  "wrong_password": "Sai mật khẩu.",
+  "register_success": "Đăng ký thành công! Bạn đã được đăng nhập.",
+  "pass_no_match": "Hai mật khẩu không khớp.",
+  "name_taken": "Tên này đã được đăng ký.",
+  "invalid_token": "Token không hợp lệ.",
+  "pass_too_short": "Mật khẩu phải có ít nhất 4 ký tự.",
+  "auth_timeout": "&cHết thời gian chờ đăng nhập/đăng ký.",
+  "reloaded": "Đã tải lại file ngôn ngữ thành công."
+}

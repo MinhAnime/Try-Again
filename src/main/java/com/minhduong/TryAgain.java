@@ -2,6 +2,7 @@ package com.minhduong;
 
 import com.minhduong.command.*;
 import com.minhduong.data.HomeManager;
+import com.minhduong.data.LanguageManager;
 import com.minhduong.data.PlayerDataManager;
 import com.minhduong.events.AuthEventHandler;
 import net.fabricmc.api.ModInitializer;
@@ -21,6 +22,7 @@ public class TryAgain implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Loading...");
+		LanguageManager.init();
 		PlayerDataManager.init();
 		HomeManager.init();
 
@@ -31,6 +33,17 @@ public class TryAgain implements ModInitializer {
 			HomeCommand.register(dispatcher);
 			TpaCommand.register(dispatcher);
 			HelpCommand.register(dispatcher);
+			
+			dispatcher.register(net.minecraft.server.command.CommandManager.literal("tryagain")
+				.then(net.minecraft.server.command.CommandManager.literal("reload")
+					.requires(source -> true)
+					.executes(ctx -> {
+						LanguageManager.load();
+						ctx.getSource().sendMessage(com.minhduong.util.Messages.success("reloaded"));
+						return 1;
+					})
+				)
+			);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register(AuthEventHandler::onPlayerJoin);

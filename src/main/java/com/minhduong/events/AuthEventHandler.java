@@ -36,7 +36,7 @@ public class AuthEventHandler {
 
         // Java → nhắc gõ lệnh
         if (PlayerDataManager.accountExists(username)) {
-            player.sendMessage(Messages.MUST_LOGIN);
+            player.sendMessage(Messages.mustLogin());
         } else {
             player.sendMessage(Messages.info("Chào mừng! Dùng: /register <mật khẩu> <xác nhận mật khẩu> <token>"));
         }

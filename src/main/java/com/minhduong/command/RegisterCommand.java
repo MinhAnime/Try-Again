@@ -34,28 +34,28 @@ public class RegisterCommand {
     }
     public static int doRegister(ServerPlayerEntity player, String username, String password, String confirm, String token) {
         if (PlayerDataManager.isAuthenticated(username))
-        { player.sendMessage(Messages.ALREADY_AUTH);
+        { player.sendMessage(Messages.alreadyAuth());
             return 0;
         }
         if (PlayerDataManager.accountExists(username))
-        { player.sendMessage(Messages.NAME_TAKEN);
+        { player.sendMessage(Messages.nameTaken());
             return 0;
         }
         if (password.length() < 4)
-        { player.sendMessage(Messages.PASS_TOO_SHORT);
+        { player.sendMessage(Messages.passTooShort());
             return 0;
         }
         if (!password.equals(confirm))
-        { player.sendMessage(Messages.PASS_NO_MATCH);
+        { player.sendMessage(Messages.passNoMatch());
             return 0;
         }
         TokenConfig.load();
         if (!TokenConfig.consumeToken(token))
-        { player.sendMessage(Messages.INVALID_TOKEN); return 0; }
+        { player.sendMessage(Messages.invalidToken()); return 0; }
         PlayerDataManager.register(username, password);
         PlayerDataManager.setAuthenticated(username, true);
         SessionManager.endSession(player);
-        player.sendMessage(Messages.REGISTER_SUCCESS);
+        player.sendMessage(Messages.registerSuccess());
         player.changeGameMode(GameMode.SURVIVAL);
         return 1;
     }

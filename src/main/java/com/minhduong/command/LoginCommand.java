@@ -22,19 +22,19 @@ public class LoginCommand {
                             String password = StringArgumentType.getString(ctx, "password");
 
                             if (PlayerDataManager.isAuthenticated(username)) {
-                                player.sendMessage(Messages.ALREADY_AUTH); return 0;
+                                player.sendMessage(Messages.alreadyAuth()); return 0;
                             }
                             if (!PlayerDataManager.accountExists(username)) {
-                                player.sendMessage(Messages.MUST_REGISTER); return 0;
+                                player.sendMessage(Messages.mustRegister()); return 0;
                             }
                             if (!PlayerDataManager.verifyPassword(username, password)) {
-                                player.sendMessage(Messages.WRONG_PASSWORD); return 0;
+                                player.sendMessage(Messages.wrongPassword()); return 0;
                             }
 
                             PlayerDataManager.setAuthenticated(username, true);
                             SessionManager.endSession(player);
                             player.changeGameMode(GameMode.SURVIVAL);
-                            player.sendMessage(Messages.LOGIN_SUCCESS);
+                            player.sendMessage(Messages.loginSuccess());
                             return 1;
                         }))
                 .executes(ctx -> {

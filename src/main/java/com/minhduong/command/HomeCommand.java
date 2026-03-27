@@ -213,7 +213,7 @@ public class HomeCommand {
     private static boolean checkAuth(ServerPlayerEntity player) {
         if (!PlayerDataManager.isAuthenticated(
                 player.getName().getString())) {
-            player.sendMessage(Messages.MUST_LOGIN);
+            player.sendMessage(Messages.mustLogin());
             return false;
         }
         return true;
