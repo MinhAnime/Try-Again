@@ -27,7 +27,7 @@ public class TokenConfig {
         try {
             if (!Files.exists(CONFIG_FILE)) {
                 saveDefault();
-                TryAgain.LOGGER.warn("[Try Again] Created default token.json file. Please change your token in token.json file");
+                TryAgain.LOGGER.warn("Created default token.json file. Please change your token in token.json file");
                 return;
             }
             try (Reader reader = Files.newBufferedReader(CONFIG_FILE, StandardCharsets.UTF_8)) {
@@ -46,7 +46,7 @@ public class TokenConfig {
         if (!tokens.contains(token)) return false;
         tokens.remove(token);
         saveCurrentToken();
-        TryAgain.LOGGER.info("[TryAgain] Token '{}' is used and removed.", token);
+        TryAgain.LOGGER.info("Token '{}' is used and removed.", token);
         return true;
     }
     public static int remainingCount() {
@@ -56,7 +56,7 @@ public class TokenConfig {
         Files.createDirectories(CONFIG_FILE.getParent());
         JsonObject obj = new JsonObject();
         JsonArray arr = new JsonArray();
-        arr.add("TOKEN_1"); arr.add("TOKEN_2"); arr.add("TOKEN_3");
+        arr.add("a"); arr.add("b"); arr.add("c"); arr.add("d"); arr.add("e");
         obj.add("tokens", arr);
         try (Writer w = Files.newBufferedWriter(CONFIG_FILE, StandardCharsets.UTF_8)) {
             GSON.toJson(obj, w);

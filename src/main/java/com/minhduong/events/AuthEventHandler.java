@@ -50,7 +50,6 @@ public class AuthEventHandler {
         PlayerDataManager.clearSession(player.getName().getString());
         SessionManager.endSession(player);
         TpaManager.clearAll(player.getUuid());
-        HudManager.remove(player);
         lastReminder.remove(player.getUuid());
     }
 
@@ -83,14 +82,6 @@ public class AuthEventHandler {
 
                 toKick.forEach(p -> p.networkHandler.disconnect(
                         Text.literal("§cVào treo máy à. Cút ngay ra.")));
-            }
-            if (hudTick >= 40) {
-                hudTick = 0;
-                for (ServerPlayerEntity p : s.getPlayerManager().getPlayerList()) {
-                    if (PlayerDataManager.isAuthenticated(p.getName().getString())) {
-                        HudManager.update(p);
-                    }
-                }
             }
         });
     }

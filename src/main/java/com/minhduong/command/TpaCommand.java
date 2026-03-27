@@ -1,6 +1,5 @@
 package com.minhduong.command;
 
-import com.minhduong.data.EconomyManager;
 import com.minhduong.data.PlayerDataManager;
 import com.minhduong.data.TpaManager;
 import com.minhduong.util.Messages;
@@ -17,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class TpaCommand {
+
     private static final SuggestionProvider<ServerCommandSource> ONLINE_PLAYERS =
             (ctx, builder) -> {
                 ServerPlayerEntity sender = ctx.getSource().getPlayer();
@@ -45,33 +45,44 @@ public class TpaCommand {
                             ServerPlayerEntity target = ctx.getSource().getServer().getPlayerManager().getPlayer(name);
 
                             if (target == null) {
-                                sender.sendMessage(Messages.error("'" + name + "' Không online.")); return 0;
-                            }
-                            if (target.equals(sender)) {
-                                sender.sendMessage(Messages.error("Không thể teleport đến chính mình.")); return 0;
-                            }
-                            if (!PlayerDataManager.isAuthenticated(target.getName().getString())) {
-                                sender.sendMessage(Messages.error("Người chơi chưa đăng nhập.")); return 0;
+                                sender.sendMessage(Messages.error(
+                                        "§8[§6§lTPA§8] §cNgười chơi §f" + name + " §ckhông online."));
+                                return 0;
                             }
 
-                            long cost = EconomyManager.getNextTpCost(sender.getName().getString());
-                            if (EconomyManager.getBalance(sender.getName().getString()) < cost) {
-                                sender.sendMessage(Messages.error(String.format(
-                                        "Thiếu tiền mà đòi tele à? Nạp vip vào! Cần %dxu, bạn có %dxu.",
-                                        cost, EconomyManager.getBalance(sender.getName().getString()))));
+                            if (target.equals(sender)) {
+                                sender.sendMessage(Messages.error(
+                                        "§8[§6§lTPA§8] §cBạn không thể teleport đến chính mình."));
+                                return 0;
+                            }
+
+                            if (!PlayerDataManager.isAuthenticated(target.getName().getString())) {
+                                sender.sendMessage(Messages.error(
+                                        "§8[§6§lTPA§8] §cNgười chơi này chưa đăng nhập."));
                                 return 0;
                             }
 
                             TpaManager.sendRequest(sender.getUuid(), target.getUuid());
+
                             sender.sendMessage(Messages.info(String.format(
-                                    "Đã gửi yêu cầu đến %s. Chi phí: %dxu. Hết hạn sau 30 giây.",
-                                    target.getName().getString(), cost)));
+                                    "§8[§6§lTPA§8] §eĐã gửi yêu cầu teleport tới §b%s§e (hết hạn sau §630s§e).",
+                                    target.getName().getString())));
+
+                            target.sendMessage(Messages.info("§8§m-----------------------------"));
                             target.sendMessage(Messages.info(String.format(
-                                    "%s muốn teleport đến bạn! Dùng /tpaok hoặc /tpdeny",
+                                    "§8[§6§lTPA§8] §b%s §emuốn teleport đến bạn.",
                                     sender.getName().getString())));
+                            target.sendMessage(Messages.info("§a✔ §7Dùng §f/tpaok §7để chấp nhận"));
+                            target.sendMessage(Messages.info("§c✖ §7Dùng §f/tpdeny §7để từ chối"));
+                            target.sendMessage(Messages.info("§8§m-----------------------------"));
+
                             return 1;
                         }))
-                .executes(ctx -> { ctx.getSource().sendMessage(Messages.info("Dùng: /tpa <tên người chơi>")); return 0; })
+                .executes(ctx -> {
+                    ctx.getSource().sendMessage(Messages.info(
+                            "§8[§6§lTPA§8] §7Sử dụng: §f/tpa <tên người chơi>"));
+                    return 0;
+                })
         );
 
         dispatcher.register(CommandManager.literal("tpaok").executes(ctx -> {
@@ -92,57 +103,66 @@ public class TpaCommand {
     public static int handleAccept(ServerPlayerEntity target) {
         UUID senderUuid = TpaManager.getPendingSenderFor(target.getUuid());
         if (senderUuid == null) {
-            target.sendMessage(Messages.error("Không có yêu cầu teleport nào đang chờ.")); return 0;
+            target.sendMessage(Messages.error(
+                    "§8[§6§lTPA§8] §cKhông có yêu cầu teleport nào đang chờ."));
+            return 0;
         }
 
         ServerPlayerEntity sender = target.getEntityWorld().getServer().getPlayerManager().getPlayer(senderUuid);
         TpaManager.clearRequest(senderUuid);
 
         if (sender == null) {
-            target.sendMessage(Messages.error("Người gửi đã thoát server.")); return 0;
-        }
-
-        String sname = sender.getName().getString();
-        long cost = EconomyManager.getNextTpCost(sname);
-
-        if (!EconomyManager.deductBalance(sname, cost)) {
-            sender.sendMessage(Messages.error(String.format("Không đủ xu! Cần %dxu.", cost)));
-            target.sendMessage(Messages.error("Người kia không đủ xu."));
+            target.sendMessage(Messages.error(
+                    "§8[§6§lTPA§8] §cNgười gửi đã rời server."));
             return 0;
         }
 
-        EconomyManager.recordTeleport(sname);
+        String sname = sender.getName().getString();
 
-        sender.teleport(target.getEntityWorld(),
+        sender.teleport(
+                target.getEntityWorld(),
+                target.getX(), target.getY(), target.getZ(),
+                Set.of(),
+                target.getYaw(), target.getPitch(),
+                true
+        );
 
-                target.getX(), target.getY(), target.getZ(), Set.of(), target.getYaw(), target.getPitch(), true);
+        target.sendMessage(Messages.success(
+                "§8[§6§lTPA§8] §a§b" + sname + " §ađã teleport đến vị trí của bạn."));
 
-        target.sendMessage(Messages.success(sname + " đã được teleport đến bạn."));
         sender.sendMessage(Messages.success(String.format(
-                "Đã teleport đến %s! - %dxu. Còn lại: %dxu.",
-                target.getName().getString(), cost, EconomyManager.getBalance(sname))));
-        sender.sendMessage(Messages.info(String.format(
-                "Lần %d hôm nay. Tiếp theo: %dxu.",
-                EconomyManager.getTodayTpCount(sname), EconomyManager.getNextTpCost(sname))));
+                "§8[§6§lTPA§8] §aĐã teleport đến §b%s§a!",
+                target.getName().getString())));
+
         return 1;
     }
 
     public static int handleDeny(ServerPlayerEntity target) {
         UUID senderUuid = TpaManager.getPendingSenderFor(target.getUuid());
         if (senderUuid == null) {
-            target.sendMessage(Messages.error("Không có yêu cầu teleport nào đang chờ.")); return 0;
+            target.sendMessage(Messages.error(
+                    "§8[§6§lTPA§8] §cKhông có yêu cầu teleport nào đang chờ."));
+            return 0;
         }
+
         ServerPlayerEntity sender = target.getEntityWorld().getServer().getPlayerManager().getPlayer(senderUuid);
         TpaManager.clearRequest(senderUuid);
-        target.sendMessage(Messages.success("Đã từ chối yêu cầu teleport."));
+
+        target.sendMessage(Messages.success(
+                "§8[§6§lTPA§8] §eBạn đã từ chối yêu cầu teleport."));
+
         if (sender != null)
-            sender.sendMessage(Messages.error(target.getName().getString() + " đã từ chối yêu cầu của bạn."));
+            sender.sendMessage(Messages.error(
+                    "§8[§6§lTPA§8] §c§b" + target.getName().getString()
+                            + " §cđã từ chối yêu cầu teleport của bạn."));
+
         return 1;
     }
 
     private static boolean checkAuth(ServerPlayerEntity player) {
         if (!PlayerDataManager.isAuthenticated(player.getName().getString())) {
-            player.sendMessage(Messages.MUST_LOGIN); return false;
+            player.sendMessage(Messages.MUST_LOGIN);
+            return false;
         }
         return true;
     }
