@@ -3,6 +3,7 @@ package com.minhduong.command;
 import com.minhduong.data.HomeData;
 import com.minhduong.data.HomeManager;
 import com.minhduong.data.PlayerDataManager;
+import com.minhduong.data.CommandToggleManager;
 import com.minhduong.util.HomeTextBuilder;
 import com.minhduong.util.Messages;
 import com.mojang.brigadier.CommandDispatcher;
@@ -36,7 +37,7 @@ public class HomeCommand {
                 .then(CommandManager.argument("name", StringArgumentType.word())
                         .executes(ctx -> {
                             ServerPlayerEntity player = ctx.getSource().getPlayer();
-                            if (player == null || !checkAuth(player)) return 0;
+                            if (player == null || !checkAuth(player) || !checkCommandEnabled(player, "sethome")) return 0;
 
                             return doSetHome(
                                     player,
@@ -49,7 +50,7 @@ public class HomeCommand {
                         .suggests(OWN_HOMES)
                         .executes(ctx -> {
                             ServerPlayerEntity player = ctx.getSource().getPlayer();
-                            if (player == null || !checkAuth(player)) return 0;
+                            if (player == null || !checkAuth(player) || !checkCommandEnabled(player, "home")) return 0;
 
                             return doGoHome(
                                     player,
@@ -62,7 +63,7 @@ public class HomeCommand {
                         .suggests(OWN_HOMES)
                         .executes(ctx -> {
                             ServerPlayerEntity player = ctx.getSource().getPlayer();
-                            if (player == null || !checkAuth(player)) return 0;
+                            if (player == null || !checkAuth(player) || !checkCommandEnabled(player, "delhome")) return 0;
 
                             return doDelHome(
                                     player,
@@ -73,7 +74,7 @@ public class HomeCommand {
         dispatcher.register(CommandManager.literal("lshome")
                 .executes(ctx -> {
                     ServerPlayerEntity player = ctx.getSource().getPlayer();
-                    if (player == null || !checkAuth(player)) return 0;
+                    if (player == null || !checkAuth(player) || !checkCommandEnabled(player, "lshome")) return 0;
                     return listHomes(player);
                 }));
     }
@@ -223,5 +224,14 @@ public class HomeCommand {
             return false;
         }
         return true;
+    }
+
+    private static boolean checkCommandEnabled(ServerPlayerEntity player, String commandName) {
+        if (!CommandToggleManager.isDisabled(commandName)) {
+            return true;
+        }
+
+        player.sendMessage(Messages.error("Lenh /" + commandName + " dang bi OP tat."));
+        return false;
     }
 }
