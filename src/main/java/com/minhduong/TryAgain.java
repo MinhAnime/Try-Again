@@ -1,6 +1,7 @@
 package com.minhduong;
 
 import com.minhduong.command.*;
+import com.minhduong.data.CommandToggleManager;
 import com.minhduong.data.HomeManager;
 import com.minhduong.data.LanguageManager;
 import com.minhduong.data.PlayerDataManager;
@@ -25,6 +26,7 @@ public class TryAgain implements ModInitializer {
 		LanguageManager.init();
 		PlayerDataManager.init();
 		HomeManager.init();
+		CommandToggleManager.init();
 
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -34,6 +36,7 @@ public class TryAgain implements ModInitializer {
 			TpaCommand.register(dispatcher);
 			HelpCommand.register(dispatcher);
 			LanguageCommand.register(dispatcher);
+			CommandToggleCommand.register(dispatcher);
 		});
 
 		ServerPlayConnectionEvents.JOIN.register(AuthEventHandler::onPlayerJoin);
