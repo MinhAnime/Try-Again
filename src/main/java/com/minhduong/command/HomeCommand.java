@@ -231,6 +231,10 @@ public class HomeCommand {
             return true;
         }
 
+        if (CommandToggleManager.isAllowedPlayer(commandName, player.getName().getString())) {
+            return true;
+        }
+
         player.sendMessage(Messages.error("Lenh /" + commandName + " dang bi OP tat."));
         return false;
     }

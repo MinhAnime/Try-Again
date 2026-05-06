@@ -13,6 +13,7 @@ import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CommandToggleCommand {
     private static final Permission COMMAND_PERMISSION =
@@ -29,6 +30,23 @@ public class CommandToggleCommand {
                     CommandToggleManager.getDisabledCommands(),
                     builder
             );
+
+    private static final SuggestionProvider<ServerCommandSource> ONLINE_PLAYERS =
+            (ctx, builder) -> CommandSource.suggestMatching(
+                    ctx.getSource().getServer().getPlayerManager().getPlayerList().stream()
+                            .map(p -> p.getName().getString())
+                            .toList(),
+                    builder
+            );
+
+    private static final SuggestionProvider<ServerCommandSource> ALLOWED_PLAYERS_FOR_COMMAND =
+            (ctx, builder) -> {
+                String commandName = StringArgumentType.getString(ctx, "name");
+                return CommandSource.suggestMatching(
+                        CommandToggleManager.getAllowedPlayers(commandName),
+                        builder
+                );
+            };
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("tryagain")
@@ -48,6 +66,26 @@ public class CommandToggleCommand {
                                                 ctx.getSource(),
                                                 StringArgumentType.getString(ctx, "name")
                                         ))))
+                        .then(CommandManager.literal("allow")
+                                .then(CommandManager.argument("name", StringArgumentType.word())
+                                        .suggests(DISABLED_COMMANDS)
+                                        .then(CommandManager.argument("player", StringArgumentType.word())
+                                                .suggests(ONLINE_PLAYERS)
+                                                .executes(ctx -> allowPlayer(
+                                                        ctx.getSource(),
+                                                        StringArgumentType.getString(ctx, "name"),
+                                                        StringArgumentType.getString(ctx, "player")
+                                                )))))
+                        .then(CommandManager.literal("unallow")
+                                .then(CommandManager.argument("name", StringArgumentType.word())
+                                        .suggests(SUPPORTED_COMMANDS)
+                                        .then(CommandManager.argument("player", StringArgumentType.word())
+                                                .suggests(ALLOWED_PLAYERS_FOR_COMMAND)
+                                                .executes(ctx -> unallowPlayer(
+                                                        ctx.getSource(),
+                                                        StringArgumentType.getString(ctx, "name"),
+                                                        StringArgumentType.getString(ctx, "player")
+                                                )))))
                         .then(CommandManager.literal("list")
                                 .executes(ctx -> listCommands(ctx.getSource())))
                 ));
@@ -99,6 +137,57 @@ public class CommandToggleCommand {
         return 1;
     }
 
+    private static int allowPlayer(ServerCommandSource source, String rawCommandName, String rawPlayerName) {
+        if (!hasPermission(source)) {
+            source.sendMessage(Messages.error("Ban khong co quyen dung lenh nay."));
+            return 0;
+        }
+
+        String commandName = rawCommandName.toLowerCase(Locale.ROOT);
+        String playerName = rawPlayerName.toLowerCase(Locale.ROOT);
+
+        if (!CommandToggleManager.isSupported(commandName)) {
+            source.sendMessage(Messages.error("Lenh /" + rawCommandName + " khong ho tro tat/bat."));
+            return 0;
+        }
+
+        if (!CommandToggleManager.isDisabled(commandName)) {
+            source.sendMessage(Messages.info("Lenh /" + commandName + " dang bat. Hay disable truoc."));
+            return 0;
+        }
+
+        if (!CommandToggleManager.allowPlayer(commandName, playerName)) {
+            source.sendMessage(Messages.info("Player " + playerName + " da duoc phep dung /" + commandName + "."));
+            return 0;
+        }
+
+        source.sendMessage(Messages.success("Da cho phep " + playerName + " dung /" + commandName + "."));
+        return 1;
+    }
+
+    private static int unallowPlayer(ServerCommandSource source, String rawCommandName, String rawPlayerName) {
+        if (!hasPermission(source)) {
+            source.sendMessage(Messages.error("Ban khong co quyen dung lenh nay."));
+            return 0;
+        }
+
+        String commandName = rawCommandName.toLowerCase(Locale.ROOT);
+        String playerName = rawPlayerName.toLowerCase(Locale.ROOT);
+
+        if (!CommandToggleManager.isSupported(commandName)) {
+            source.sendMessage(Messages.error("Lenh /" + rawCommandName + " khong ho tro tat/bat."));
+            return 0;
+        }
+
+        if (!CommandToggleManager.unallowPlayer(commandName, playerName)) {
+            source.sendMessage(Messages.info("Player " + playerName + " chua duoc allow cho /" + commandName + "."));
+            return 0;
+        }
+
+        source.sendMessage(Messages.success("Da go allow " + playerName + " khoi /" + commandName + "."));
+        return 1;
+    }
+
     private static int listCommands(ServerCommandSource source) {
         if (!hasPermission(source)) {
             source.sendMessage(Messages.error("Ban khong co quyen dung lenh nay."));
@@ -116,6 +205,16 @@ public class CommandToggleCommand {
         }
 
         source.sendMessage(Messages.info("Lenh dang bi tat: /" + String.join(", /", disabled)));
+
+        Map<String, List<String>> overrides = CommandToggleManager.getAllowedPlayersByCommand();
+        for (String commandName : disabled) {
+            List<String> players = overrides.get(commandName);
+            if (players == null || players.isEmpty()) {
+                source.sendMessage(Messages.info("/" + commandName + " -> khong co player nao duoc allow."));
+                continue;
+            }
+            source.sendMessage(Messages.info("/" + commandName + " -> allow: " + String.join(", ", players)));
+        }
         return 1;
     }
 
